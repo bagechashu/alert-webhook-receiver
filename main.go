@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jackk01/alertmanager-dingtalk-hook/model"
-	"github.com/jackk01/alertmanager-dingtalk-hook/pkg"
+	"github.com/bagechashu/alert-webhook-receiver/model"
+	"github.com/bagechashu/alert-webhook-receiver/pkg"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -20,16 +20,16 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func httpHandle(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		fmt.Fprint(w, "")
+		fmt.Fprint(w, "error: bad request")
 		return
 	}
 
-	body, _ := ioutil.ReadAll(r.Body)
+	body, _ := io.ReadAll(r.Body)
 	if len(body) == 0 {
-		fmt.Fprint(w, "")
+		fmt.Fprint(w, "error: post body is empty ")
 		return
 	}
-	log.Print(string(body))
+	// log.Print(string(body))
 
 	var notification model.Notification
 	// json to struct
@@ -47,8 +47,8 @@ func httpHandle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, `{"message": "send to dingtalk successful"}`)
 }
 
-func serveHTTP(srv *http.Server) {
-	err := srv.ListenAndServe()
+func serveHTTP(server *http.Server) {
+	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatalf("listen error, %s", err.Error())
 	}
@@ -56,9 +56,15 @@ func serveHTTP(srv *http.Server) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", httpHandle)
-	server := &http.Server{Addr: ":5000", Handler: mux}
+	mux.HandleFunc("/webhook/ding", httpHandle)
+	server := &http.Server{Addr: ":9000", Handler: mux}
+
 	go serveHTTP(server)
+
+	// Give the server some time to start
+	time.Sleep(1 * time.Second)
+
+	log.Println("Service is started and listen on ", server.Addr)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)

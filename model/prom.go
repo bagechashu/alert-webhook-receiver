@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// from prometheus model
 type Alert struct {
 	Status      string            `json:"status"`
 	Labels      map[string]string `json:"labels"`

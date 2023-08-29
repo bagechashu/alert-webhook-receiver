@@ -1,36 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dingtalk-hook
+  name: alert-webhook-receiver
   namespace: monitoring
 spec:
   selector:
     matchLabels:
-      app: dingtalk-hook
+      app: alert-webhook-receiver
   template:
     metadata:
       labels:
-        app: dingtalk-hook
+        app: alert-webhook-receiver
     spec:
       containers:
-        - name: dingtalk-hook
-          image: jackk02/dingtalk-hook:v1.1
+        - name: alert-webhook-receiver
+          image: xianleeti/alert-webhook-receiver:v0.0.2
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5000
+            - containerPort: 9000
               name: http
           env:
-            - name: PROME_URL
-              value: prometheus-k8s:9090
-            - name: ROBOT_TOKEN
+            - name: DING_ROBOT_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: dingtalk-secret
+                  name: alert-webhook-receiver-secret
                   key: token
-            - name: ROBOT_SECRET
+            - name: DING_ROBOT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: dingtalk-secret
+                  name: alert-webhook-receiver-secret
                   key: secret
           resources:
             requests:
@@ -44,13 +42,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dingtalk-hook
+  name: alert-webhook-receiver
   namespace: monitoring
 spec:
   selector:
-    app: dingtalk-hook
+    app: alert-webhook-receiver
   ports:
     - name: hook
-      port: 5000
+      port: 9000
       targetPort: http
   # type: NodePort

@@ -1,4 +1,4 @@
-module github.com/jackk01/alertmanager-dingtalk-hook
+module github.com/bagechashu/alert-webhook-receiver
 
 go 1.16
 

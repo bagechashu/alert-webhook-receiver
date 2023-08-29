@@ -1,25 +1,32 @@
+# Code Compile
 FROM golang:alpine AS build
 
-ENV GOPROXY=https://goproxy.cn
-
+# ENV GOPROXY=https://goproxy.cn
 WORKDIR /app
-
 COPY . /app
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags="-w -s" -o dingtalk
+    go build -ldflags="-w -s" -o alert-webhook-receiver
 
-FROM alpine:latest AS prod
+# Image Build
+FROM alpine:latest
 
-RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories && \
-    apk update && \
-    apk --no-cache add ca-certificates tzdata && \
-    echo "hosts: files dns" > /etc/nsswitch.conf && \
-    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
+ENV TZ=Asia/Dubai
+# RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories
+RUN apk update --no-cache && \
+    apk add --no-cache --update tzdata ca-certificates && \
+    mkdir -p /app && \
+    addgroup -S app && \
+    adduser -S -u 1000 -g app -h /app app && \
+    chown -R app:app /app && \
+    cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
 
-COPY --from=build /app/dingtalk /usr/bin/dingtalk
+COPY --from=build /app/alert-webhook-receiver /app/alert-webhook-receiver
+RUN chmod +x /app/alert-webhook-receiver
 
-EXPOSE 5000
+USER 1000
+WORKDIR /app
+EXPOSE 9000
 
-ENTRYPOINT ["dingtalk"]
+ENTRYPOINT ["/app/alert-webhook-receiver"]

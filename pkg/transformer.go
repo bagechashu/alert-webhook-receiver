@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/jackk01/alertmanager-dingtalk-hook/model"
+	"github.com/bagechashu/alert-webhook-receiver/model"
 )
 
 func transformToMarkdown(notification model.Notification) (markdown *model.DingTalkMarkdown, webhook string, err error) {

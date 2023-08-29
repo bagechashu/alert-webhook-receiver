@@ -1,10 +1,10 @@
 ## Alertmanager Dingtalk Webhook
 
-Webhook service support send Prometheus alert messages to Dingtalk.
+Alertmanager Webhook for sending alarm message.
 
 ## Secret
 ```
-kubectl create secret generic dingtalk-secret \
+kubectl create secret generic alert-webhook-receiver-secret \
 --from-literal=token=<your_token> \
 --from-literal=secret=<your_secret> -n monitoring
 ```
@@ -17,7 +17,7 @@ kubectl apply -f deploy.yaml
 ### Build image
 
 ```
-docker build -t <NAME>/dingtalk-hook:<TAG> .
+docker build -t <NAME>/alert-webhook-receiver:<TAG> .
 docker image prune -f
 ```
 
