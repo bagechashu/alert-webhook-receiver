@@ -11,7 +11,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bagechashu/alert-webhook-receiver/model"
 	"github.com/bagechashu/alert-webhook-receiver/pkg"
 	jsoniter "github.com/json-iterator/go"
 )
@@ -31,15 +30,15 @@ func httpHandle(w http.ResponseWriter, r *http.Request) {
 	}
 	// log.Print(string(body))
 
-	var notification model.Notification
-	// json to struct
-	if err := json.Unmarshal(body, &notification); err != nil {
-		log.Printf("unmarshal data error, %s", err.Error())
-		return
-	}
+	// var notification model.Notification
+	// // json to struct
+	// if err := json.Unmarshal(body, &notification); err != nil {
+	// 	log.Printf("unmarshal data error, %s", err.Error())
+	// 	return
+	// }
 
 	// send messages to dingtalk
-	if err := pkg.Send(notification); err != nil {
+	if err := pkg.SendRaw(string(body)); err != nil {
 		log.Printf("send messages error, %s", err.Error())
 		return
 	}
@@ -56,7 +55,7 @@ func serveHTTP(server *http.Server) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/webhook/ding", httpHandle)
+	mux.HandleFunc("/webhook/ding/raw", httpHandle)
 	server := &http.Server{Addr: ":9000", Handler: mux}
 
 	go serveHTTP(server)
