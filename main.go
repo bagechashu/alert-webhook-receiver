@@ -20,12 +20,14 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 func httpHandle(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Fprint(w, "error: bad request")
+		log.Printf("error: bad request [ %+v ]\n", r)
 		return
 	}
 
 	body, _ := io.ReadAll(r.Body)
 	if len(body) == 0 {
 		fmt.Fprint(w, "error: post body is empty ")
+		log.Println("error: post body is empty")
 		return
 	}
 	// log.Print(string(body))
