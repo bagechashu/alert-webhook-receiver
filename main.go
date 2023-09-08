@@ -9,8 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bagechashu/alert-webhook-receiver/handler"
-	"github.com/gorilla/mux"
+	"github.com/bagechashu/alert-webhook-receiver/router"
 )
 
 func serveHTTP(server *http.Server) {
@@ -21,9 +20,8 @@ func serveHTTP(server *http.Server) {
 }
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/webhook/{msgType}/{msgMedium}", handler.WebhookHandler)
-	server := &http.Server{Addr: ":9000", Handler: r}
+	router := router.InitRouter()
+	server := &http.Server{Addr: ":9000", Handler: router}
 
 	go serveHTTP(server)
 

@@ -1,4 +1,4 @@
-package handler
+package router
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func WebhookHandler(w http.ResponseWriter, r *http.Request) {
+func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Fprint(w, `{"message": "bad request, only allow POST method"}`)
 		log.Printf("error: bad request: [ %+v ]\n", r)

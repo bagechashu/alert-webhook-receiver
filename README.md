@@ -1,6 +1,18 @@
 ## Alertmanager Dingtalk Webhook
+Webhook for sending message.
 
-Alertmanager Webhook for sending alarm message.
+Message Type supported: {msgType}
+- Raw string: raw
+- Prometheus Alert Notification: prom
+- Huawei SMN: huaweismn
+
+Target medium supported: {msgMedium}
+- DingTalk: ding
+
+Example: 
+```
+curl -XPOST host:9000/webhook/{msgType}/{msgMedium} -d "helloworld"
+```
 
 ## Secret
 ```
