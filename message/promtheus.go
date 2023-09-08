@@ -51,18 +51,18 @@ func (prom Prom) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown) {
 			annotations := alert.Annotations
 			buffer.WriteString(fmt.Sprintf("### <font color=\"#08d417\"> %s </font>\n", "恢复通知"))
 			buffer.WriteString(fmt.Sprintf("##### %s\n", annotations["summary"]))
-			buffer.WriteString(fmt.Sprintf("\n> 状态: %s\n", alert.Status))
-			buffer.WriteString(fmt.Sprintf("\n> 级别: %s\n", alert.Labels["severity"]))
-			buffer.WriteString(fmt.Sprintf("\n> 时间: %s\n", alert.StartsAt.Local().Format("2006-01-02 15:04:05")))
-			buffer.WriteString(fmt.Sprintf("\n> 详情: %s\n", annotations["description"]))
+			buffer.WriteString(fmt.Sprintf("\n> Status: %s\n", alert.Status))
+			buffer.WriteString(fmt.Sprintf("\n> Severity: %s\n", alert.Labels["severity"]))
+			buffer.WriteString(fmt.Sprintf("\n> StartsAt: %s\n", alert.StartsAt.Local().Format("2006-01-02 15:04:05")))
+			buffer.WriteString(fmt.Sprintf("\n> Detail: %s%s\n", annotations["message"], annotations["description"]))
 		} else {
 			annotations := alert.Annotations
 			buffer.WriteString(fmt.Sprintf("### <font color=\"#FF0000\"> %s </font>\n", "告警通知"))
 			buffer.WriteString(fmt.Sprintf("##### %s\n", annotations["summary"]))
-			buffer.WriteString(fmt.Sprintf("\n> 状态: %s\n", alert.Status))
-			buffer.WriteString(fmt.Sprintf("\n> 级别: %s\n", alert.Labels["severity"]))
-			buffer.WriteString(fmt.Sprintf("\n> 时间: %s\n", alert.StartsAt.Local().Format("2006-01-02 15:04:05")))
-			buffer.WriteString(fmt.Sprintf("\n> 详情: %s\n", annotations["description"]))
+			buffer.WriteString(fmt.Sprintf("\n> Status: %s\n", alert.Status))
+			buffer.WriteString(fmt.Sprintf("\n> Severity: %s\n", alert.Labels["severity"]))
+			buffer.WriteString(fmt.Sprintf("\n> StartsAt: %s\n", alert.StartsAt.Local().Format("2006-01-02 15:04:05")))
+			buffer.WriteString(fmt.Sprintf("\n> Detail: %s%s\n", annotations["message"], annotations["description"]))
 			alertsNum += 1
 		}
 	}
