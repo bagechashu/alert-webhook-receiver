@@ -1,7 +1,4 @@
-package model
-
-type DingTalkMessage struct {
-}
+package dingtalk
 
 type DingTalkMarkdown struct {
 	MsgType  string    `json:"msgtype"`
