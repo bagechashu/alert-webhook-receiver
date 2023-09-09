@@ -21,9 +21,9 @@ type HuaweiSMN struct {
 	Body []byte
 }
 
-func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown) {
+func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error) {
 	var smnReqBody SmnReqBody
-	err := json.Unmarshal(smn.Body, &smnReqBody)
+	err = json.Unmarshal(smn.Body, &smnReqBody)
 	if err != nil {
 		log.Printf("error: unmarshal prom notification data error: %s", err.Error())
 		return

@@ -34,10 +34,10 @@ type Prom struct {
 	Body []byte
 }
 
-func (prom Prom) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown) {
+func (prom Prom) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error) {
 
 	var notification Notification
-	err := json.Unmarshal(prom.Body, &notification)
+	err = json.Unmarshal(prom.Body, &notification)
 	if err != nil {
 		log.Printf("error: unmarshal prom notification data error: %s", err.Error())
 		return

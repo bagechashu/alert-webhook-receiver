@@ -9,5 +9,5 @@ import (
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type Message interface {
-	ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown)
+	ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error)
 }

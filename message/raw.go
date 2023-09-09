@@ -11,7 +11,7 @@ type Raw struct {
 	Body []byte
 }
 
-func (raw Raw) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown) {
+func (raw Raw) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(string(raw.Body))
 
@@ -25,5 +25,5 @@ func (raw Raw) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown) {
 			IsAtAll: false,
 		},
 	}
-	return markdown
+	return
 }

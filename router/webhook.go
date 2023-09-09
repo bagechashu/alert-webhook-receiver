@@ -41,24 +41,30 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if msg == nil {
-		fmt.Fprint(w, `{"message": "webhook message only support type raw/prom/huaweismn"}`)
+		fmt.Fprint(w, `{"message": "webhook message only support type [raw/prom/huaweismn]."}`)
 		log.Printf("error: msgtype doesn't support %s\n", msgType)
 		return
 	}
 
-	if msgMedium != "ding" {
-		fmt.Fprint(w, `{"message": "only support dingtalk"}`)
-		log.Printf("error: wrong message medium: %s \n", msgMedium)
-		return
-	} else {
-		markdown := msg.ConvertToDingMarkdown()
+	switch msgMedium {
+	case "ding":
+		markdown, err := msg.ConvertToDingMarkdown()
+		if err != nil {
+			fmt.Fprint(w, `{"message": "convert to ding markdown error"}`)
+			log.Printf("error: convert data to ding markdown error, %s", err.Error())
+			return
+		}
 		// send messages to dingtalk
-		err := dingtalk.Send(markdown)
+		err = dingtalk.Send(markdown)
 		if err != nil {
 			fmt.Fprint(w, `{"message": "send dingtalk error"}`)
 			log.Printf("error: send messages error, %s", err.Error())
 			return
 		}
+	default:
+		fmt.Fprint(w, `{"message": "webhook message medium only support [ding]."}`)
+		log.Printf("error: wrong message medium: %s \n", msgMedium)
+		return
 	}
 
 	fmt.Fprint(w, `{"message": "send successful"}`)
