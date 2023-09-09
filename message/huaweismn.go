@@ -35,7 +35,7 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown
 		buffer.WriteString(fmt.Sprintf("### <font color=\"#08d417\"> %s </font>\n", "订阅确认"))
 		buffer.WriteString(fmt.Sprintf("\n##### StartAt: %s\n", smnReqBody.Timestamp))
 		buffer.WriteString(fmt.Sprintf("\n##### SubscribeUrl: %s\n", smnReqBody.SubscribeUrl))
-		buffer.WriteString(fmt.Sprintf("\n##### Message: %s\n", smnReqBody.Message))
+		buffer.WriteString(fmt.Sprintf("\n##### Message: \n> %s\n", smnReqBody.Message))
 	} else {
 		buffer.WriteString(fmt.Sprintf("### <font color=\"#FF0000\"> %s </font> %s\n", "云资源报警", smnReqBody.Type))
 		buffer.WriteString(fmt.Sprintf("\n##### StartAt: %s\n", smnReqBody.Timestamp))
@@ -44,7 +44,7 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown
 		ok := json.Unmarshal([]byte(smnReqBody.Message), &msg)
 		if ok != nil {
 			// log.Printf("error: unmarshal huaweiSMN message data error: %s", ok)
-			buffer.WriteString(fmt.Sprintf("\n##### Message: %s\n", smnReqBody.Message))
+			buffer.WriteString(fmt.Sprintf("\n##### Message: \n> %s\n", smnReqBody.Message))
 		} else {
 			buffer.WriteString(fmt.Sprintln("\n##### Message:"))
 			for k, v := range msg {

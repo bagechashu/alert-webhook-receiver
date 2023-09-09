@@ -67,12 +67,17 @@ func (prom Prom) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, er
 		}
 	}
 
+	if len(notification.Alerts) == 0 {
+		buffer.WriteString(fmt.Sprintf("### <font color=\"#EFDC66\"> %s </font>\n", "告警异常"))
+		buffer.WriteString(fmt.Sprintf("##### %s\n", "Prom Notification 没有 notification.Alerts 字段"))
+	}
+
 	buffer.WriteString(fmt.Sprintf("---\n##### [当前报警共有 %d 条 ]\n", alertsNum))
 
 	markdown = dingtalk.DingTalkMarkdown{
 		MsgType: "markdown",
 		Markdown: &dingtalk.Markdown{
-			Title: fmt.Sprintf("您有%d条监控信息, 请及时查看", len(notification.Alerts)),
+			Title: fmt.Sprintf("您有%d条监控信息, 请及时查看", alertsNum),
 			Text:  buffer.String(),
 		},
 		At: &dingtalk.At{

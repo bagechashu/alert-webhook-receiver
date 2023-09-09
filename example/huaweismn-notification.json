@@ -1,0 +1,11 @@
+{
+  "signature": "ViE96uGbBkl+S8eWqgebi5KdmRht2U8+Rs88yuyMHq1k4h3jUkcDZ6HCqTqdpJ8nrLcdqETyyEiOQyTszJdU05z+LhfE8jerCCdSbL4zeInVkydHh0kcCRWmORye0/EuQ/gLC1UIXwvUsqbUCPnBRhNFXOeXMOPPCzK+d04xjy4QHd1H/bHxgsY3AlTe0gCFT068Zru7OK6w9aQaY44mXnN3OWGmBmoHyFab5TRXLSQNz/9u/Vj646cQMMaI0PPQ30QzGYD0MtzgDZi12m8jMTHAnMkTEcbLaEgaqmaoEnATSpEcspFKNXv2skwk7rsVakMOISpMH3+qC6RzhETA2A==",
+  "topic_urn": "urn:smn:region01:0553db98c800d5192f9bc01232b89622:vpc_status_report_topic",
+  "message_id": "d86c201092574e71a3ca85826652c58b",
+  "signature_version": "v1",
+  "type": "Notification",
+  "message": "{\"enterpriseProjectId\": \"0\", \"eventTime\": \"2019-08-12 22:40:55.040632\", \"chargingMode\": \"postPaid\", \"cloudserviceType\": \"xxx.service.type.bandwidth\", \"eventType\": 1, \"regionId\": \"region01\", \"tenantId\": \"057eefe55400d2742f8cc0017870ceef\", \"resourceType\": \"xxx.resource.type.bandwidth\", \"resourceSpecCode\": \"19_bgp\", \"resourceSize\": 10, \"resourceId\": \"e091f1b1-08ef-4e2b-a27e-f85e4c19026a\", \"resouceSizeMeasureId\": 15, \"resourceName\": \"elbauto_2019_08_13_06_40_46\"}",
+  "unsubscribe_url": "https://console.xxx.com/smn/subscription/unsubscribe?subscription_urn=urn:smn:region01:0553db98c800d5192f9bc01232b89622:vpc_status_report_topic:653e212a43884f7188ca656c537e31ce",
+  "signing_cert_url": "https://smn.cn-north-9.myhuaweicloud.com/smn/SMN_cn-north-9_94f60ccdfbee4588aa4d555935a56ba3.pem",
+  "timestamp": "2019-08-12T22:40:56Z"
+}
