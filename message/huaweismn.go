@@ -25,7 +25,7 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown
 	var smnReqBody SmnReqBody
 	err = json.Unmarshal(smn.Body, &smnReqBody)
 	if err != nil {
-		log.Printf("error: unmarshal prom notification data error: %s", err.Error())
+		log.Printf("error: unmarshal huaweiSMN data error: %s", err.Error())
 		return
 	}
 
@@ -33,15 +33,24 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown
 
 	if smnReqBody.Type == "SubscriptionConfirmation" {
 		buffer.WriteString(fmt.Sprintf("### <font color=\"#08d417\"> %s </font>\n", "订阅确认"))
-		buffer.WriteString(fmt.Sprintf("\n> Time: %s\n", smnReqBody.Timestamp))
-		buffer.WriteString(fmt.Sprintf("\n> SubscribeUrl: %s\n", smnReqBody.SubscribeUrl))
-		buffer.WriteString(fmt.Sprintf("\n> Message: %s\n", smnReqBody.Message))
+		buffer.WriteString(fmt.Sprintf("\n##### StartAt: %s\n", smnReqBody.Timestamp))
+		buffer.WriteString(fmt.Sprintf("\n##### SubscribeUrl: %s\n", smnReqBody.SubscribeUrl))
+		buffer.WriteString(fmt.Sprintf("\n##### Message: %s\n", smnReqBody.Message))
 	} else {
-		buffer.WriteString(fmt.Sprintf("### <font color=\"#FF0000\"> %s </font>\n", "云资源报警"))
-		buffer.WriteString(fmt.Sprintf("##### %s\n", smnReqBody.Type))
-		buffer.WriteString(fmt.Sprintf("\n> Time: %s\n", smnReqBody.Timestamp))
-		buffer.WriteString(fmt.Sprintf("\n> Subject: %s\n", smnReqBody.Subject))
-		buffer.WriteString(fmt.Sprintf("\n> Message: %s\n", smnReqBody.Message))
+		buffer.WriteString(fmt.Sprintf("### <font color=\"#FF0000\"> %s </font> %s\n", "云资源报警", smnReqBody.Type))
+		buffer.WriteString(fmt.Sprintf("\n##### StartAt: %s\n", smnReqBody.Timestamp))
+		buffer.WriteString(fmt.Sprintf("\n##### Subject: %s\n", smnReqBody.Subject))
+		var msg map[string]interface{}
+		ok := json.Unmarshal([]byte(smnReqBody.Message), &msg)
+		if ok != nil {
+			// log.Printf("error: unmarshal huaweiSMN message data error: %s", ok)
+			buffer.WriteString(fmt.Sprintf("\n##### Message: %s\n", smnReqBody.Message))
+		} else {
+			buffer.WriteString(fmt.Sprintln("\n##### Message:"))
+			for k, v := range msg {
+				buffer.WriteString(fmt.Sprintf("\n> %s: %s\n", k, v))
+			}
+		}
 	}
 
 	markdown = dingtalk.DingTalkMarkdown{
