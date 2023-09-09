@@ -15,15 +15,9 @@ func (raw Raw) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err 
 	var buffer bytes.Buffer
 	buffer.WriteString(string(raw.Body))
 
-	markdown = dingtalk.DingTalkMarkdown{
-		MsgType: "markdown",
-		Markdown: &dingtalk.Markdown{
-			Title: fmt.Sprintln("Cloud Resource Alert"),
-			Text:  buffer.String(),
-		},
-		At: &dingtalk.At{
-			IsAtAll: false,
-		},
-	}
+	markdown = dingtalk.NewDingTalkMarkdown()
+	markdown.SetTitle(fmt.Sprintln("Cloud Resource Alert"))
+	markdown.SetText(buffer.String())
+
 	return
 }

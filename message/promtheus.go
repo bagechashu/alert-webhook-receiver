@@ -45,6 +45,17 @@ func (prom Prom) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, er
 
 	var buffer bytes.Buffer
 
+	// 避免因为没有 alerts, 导致发送空报警内容
+	if len(notification.Alerts) == 0 {
+		buffer.WriteString(fmt.Sprintf("### <font color=\"#EFDC66\"> %s </font>\n", "告警异常"))
+		buffer.WriteString(fmt.Sprintf("##### %s\n", "Prom Notification 没有 notification.Alerts 字段"))
+
+		markdown = dingtalk.NewDingTalkMarkdown()
+		markdown.SetTitle(fmt.Sprintln("告警异常"))
+		markdown.SetText(buffer.String())
+		return
+	}
+
 	var alertsNum int = 0
 	for _, alert := range notification.Alerts {
 		if alert.Status == "resolved" {
@@ -67,23 +78,10 @@ func (prom Prom) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, er
 		}
 	}
 
-	if len(notification.Alerts) == 0 {
-		buffer.WriteString(fmt.Sprintf("### <font color=\"#EFDC66\"> %s </font>\n", "告警异常"))
-		buffer.WriteString(fmt.Sprintf("##### %s\n", "Prom Notification 没有 notification.Alerts 字段"))
-	}
-
 	buffer.WriteString(fmt.Sprintf("---\n##### [当前报警共有 %d 条 ]\n", alertsNum))
 
-	markdown = dingtalk.DingTalkMarkdown{
-		MsgType: "markdown",
-		Markdown: &dingtalk.Markdown{
-			Title: fmt.Sprintf("您有%d条监控信息, 请及时查看", alertsNum),
-			Text:  buffer.String(),
-		},
-		At: &dingtalk.At{
-			IsAtAll: false,
-		},
-	}
-
+	markdown = dingtalk.NewDingTalkMarkdown()
+	markdown.SetTitle(fmt.Sprintf("您有%d条监控信息, 请及时查看", alertsNum))
+	markdown.SetText(buffer.String())
 	return
 }

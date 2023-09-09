@@ -53,16 +53,8 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown
 		}
 	}
 
-	markdown = dingtalk.DingTalkMarkdown{
-		MsgType: "markdown",
-		Markdown: &dingtalk.Markdown{
-			Title: fmt.Sprintln("云资源报警, 请及时查看."),
-			Text:  buffer.String(),
-		},
-		At: &dingtalk.At{
-			IsAtAll: false,
-		},
-	}
-
+	markdown = dingtalk.NewDingTalkMarkdown()
+	markdown.SetTitle(fmt.Sprintln("云资源报警, 请及时查看."))
+	markdown.SetText(buffer.String())
 	return
 }
