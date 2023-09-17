@@ -2,3 +2,4 @@
 .vscode
 /tmp
 alert-webhook-receiver
+.env.local
