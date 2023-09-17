@@ -5,8 +5,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/bagechashu/alert-webhook-receiver/medium/dingtalk"
+	"github.com/bagechashu/alert-webhook-receiver/medium"
 	"github.com/bagechashu/alert-webhook-receiver/message"
 	"github.com/gorilla/mux"
 )
@@ -46,6 +47,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var med medium.Medium
 	switch msgMedium {
 	case "ding":
 		markdown, err := msg.ConvertToDingMarkdown()
@@ -54,16 +56,24 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("error: convert data to ding markdown error, %s", err.Error())
 			return
 		}
-		// send messages to dingtalk
-		err = dingtalk.Send(markdown)
-		if err != nil {
-			fmt.Fprint(w, `{"message": "send dingtalk error"}`)
-			log.Printf("error: send messages error, %s", err.Error())
-			return
+		// set msgMedium to dingtalk
+		token := os.Getenv("DING_ROBOT_TOKEN")
+		secret := os.Getenv("DING_ROBOT_SECRET")
+		med = &medium.DingRobot{
+			Token:   token,
+			Secret:  secret,
+			ReqBody: markdown,
 		}
 	default:
 		fmt.Fprint(w, `{"message": "webhook message medium only support [ding]."}`)
 		log.Printf("error: wrong message medium: %s \n", msgMedium)
+		return
+	}
+
+	err := med.Send()
+	if err != nil {
+		fmt.Fprint(w, `{"message": "send dingtalk error"}`)
+		log.Printf("error: send messages error, %s", err.Error())
 		return
 	}
 

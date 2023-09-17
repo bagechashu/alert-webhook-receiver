@@ -1,16 +1,14 @@
-package dingtalk
+package medium
 
 import (
 	"bytes"
-	"fmt"
-
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
@@ -18,7 +16,69 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-func sign(timestamp int64, secret string) string {
+// request body struct
+type DingTalkMarkdown struct {
+	MsgType  string    `json:"msgtype"`
+	At       *At       `json:"at"`
+	Markdown *Markdown `json:"markdown"`
+}
+
+type At struct {
+	AtMobiles []string `json:"atMobiles"`
+	IsAtAll   bool     `json:"isAtAll"`
+}
+
+type Markdown struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}
+
+func NewDingTalkMarkdown() DingTalkMarkdown {
+	return DingTalkMarkdown{
+		MsgType: "markdown",
+		At: &At{
+			IsAtAll:   false,
+			AtMobiles: []string{},
+		},
+		Markdown: &Markdown{
+			Title: "",
+			Text:  "",
+		},
+	}
+}
+
+func (md *DingTalkMarkdown) SetTitle(title string) {
+	md.Markdown.Title = title
+}
+
+func (md *DingTalkMarkdown) SetText(text string) {
+	md.Markdown.Text = text
+}
+
+func (md *DingTalkMarkdown) SetIsAtAll(isAtAll bool) {
+	md.At.IsAtAll = isAtAll
+}
+
+func (md *DingTalkMarkdown) SetAtMobiles(atMobiles []string) {
+	md.At.AtMobiles = atMobiles
+}
+
+// medium struct
+type DingRobot struct {
+	Token   string
+	Secret  string
+	ReqBody DingTalkMarkdown
+}
+
+func NewDingRobot() DingRobot {
+	return DingRobot{
+		Token:   "",
+		Secret:  "",
+		ReqBody: DingTalkMarkdown{},
+	}
+}
+
+func (robot *DingRobot) sign(timestamp int64, secret string) string {
 	strToHash := fmt.Sprintf("%d\n%s", timestamp, secret)
 	hmac256 := hmac.New(sha256.New, []byte(secret))
 	hmac256.Write([]byte(strToHash))
@@ -26,28 +86,26 @@ func sign(timestamp int64, secret string) string {
 	return base64.StdEncoding.EncodeToString(hmacCode)
 }
 
-func robotURL() string {
-	token := os.Getenv("DING_ROBOT_TOKEN")
-	secret := os.Getenv("DING_ROBOT_SECRET")
-	if token == "" || secret == "" {
+func (robot *DingRobot) robotURL() string {
+	if robot.Token == "" || robot.Secret == "" {
 		log.Println("error: env DING_ROBOT_TOKEN or DING_ROBOT_SECRET not found")
 		return ""
 	}
 	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
-	sign := sign(timestamp, secret)
+	sign := robot.sign(timestamp, robot.Secret)
 
 	// log.Printf("info: ding webhook url: [ https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s ]\n", token, timestamp, sign)
 
-	return fmt.Sprintf("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s", token, timestamp, sign)
+	return fmt.Sprintf("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s", robot.Token, timestamp, sign)
 }
 
-func Send(markdown DingTalkMarkdown) (err error) {
-	var webhook = robotURL()
+func (robot *DingRobot) Send() (err error) {
+	var webhook = robot.robotURL()
 	if err != nil || webhook == "" {
 		return
 	}
 
-	reqbody, err := json.Marshal(markdown)
+	reqbody, err := json.Marshal(robot.ReqBody)
 	if err != nil {
 		return
 	}

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/bagechashu/alert-webhook-receiver/medium/dingtalk"
+	"github.com/bagechashu/alert-webhook-receiver/medium"
 )
 
 // https://support.huaweicloud.com/usermanual-smn/smn_ug_a9002.html
@@ -21,7 +21,7 @@ type HuaweiSMN struct {
 	Body []byte
 }
 
-func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error) {
+func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err error) {
 	var smnReqBody SmnReqBody
 	err = json.Unmarshal(smn.Body, &smnReqBody)
 	if err != nil {
@@ -53,7 +53,7 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown
 		}
 	}
 
-	markdown = dingtalk.NewDingTalkMarkdown()
+	markdown = medium.NewDingTalkMarkdown()
 	markdown.SetTitle(fmt.Sprintln("云资源报警, 请及时查看."))
 	markdown.SetText(buffer.String())
 	return

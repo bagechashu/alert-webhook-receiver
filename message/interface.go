@@ -1,7 +1,7 @@
 package message
 
 import (
-	"github.com/bagechashu/alert-webhook-receiver/medium/dingtalk"
+	"github.com/bagechashu/alert-webhook-receiver/medium"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -9,5 +9,5 @@ import (
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type Message interface {
-	ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error)
+	ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err error)
 }

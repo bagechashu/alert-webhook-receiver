@@ -4,18 +4,18 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/bagechashu/alert-webhook-receiver/medium/dingtalk"
+	"github.com/bagechashu/alert-webhook-receiver/medium"
 )
 
 type Raw struct {
 	Body []byte
 }
 
-func (raw Raw) ConvertToDingMarkdown() (markdown dingtalk.DingTalkMarkdown, err error) {
+func (raw Raw) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(string(raw.Body))
 
-	markdown = dingtalk.NewDingTalkMarkdown()
+	markdown = medium.NewDingTalkMarkdown()
 	markdown.SetTitle(fmt.Sprintln("Cloud Resource Alert"))
 	markdown.SetText(buffer.String())
 
