@@ -31,6 +31,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	msgType := vars["msgType"]
 	msgMedium := vars["msgMedium"]
 
+	// 根据 msgType 初始化报警源结构体
 	var msg message.Message
 	switch msgType {
 	case "raw":
@@ -39,14 +40,13 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		msg = message.Prom{Body: body}
 	case "huaweismn":
 		msg = message.HuaweiSMN{Body: body}
-	}
-
-	if msg == nil {
+	default:
 		fmt.Fprint(w, `{"message": "webhook message only support type [raw/prom/huaweismn]."}`)
 		log.Printf("error: msgtype doesn't support %s\n", msgType)
 		return
 	}
 
+	// 根据 msgMedium 初始化媒体结构体
 	var med medium.Medium
 	switch msgMedium {
 	case "ding":
