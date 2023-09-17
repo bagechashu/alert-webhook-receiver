@@ -17,7 +17,7 @@ var (
 
 func init() {
 	env := os.Getenv("ENV")
-	if "" == env {
+	if env == "" {
 		env = "production"
 		godotenv.Load()
 	}
