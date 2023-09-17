@@ -5,8 +5,8 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/bagechashu/alert-webhook-receiver/config"
 	"github.com/bagechashu/alert-webhook-receiver/medium"
 	"github.com/bagechashu/alert-webhook-receiver/message"
 	"github.com/gorilla/mux"
@@ -57,11 +57,9 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// set msgMedium to dingtalk
-		token := os.Getenv("DING_ROBOT_TOKEN")
-		secret := os.Getenv("DING_ROBOT_SECRET")
 		med = &medium.DingRobot{
-			Token:   token,
-			Secret:  secret,
+			Token:   config.DingRobot.Token,
+			Secret:  config.DingRobot.Secret,
 			ReqBody: markdown,
 		}
 	default:

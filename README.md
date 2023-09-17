@@ -14,6 +14,13 @@ Example:
 curl -XPOST host:9000/webhook/{msgType}/{msgMedium} -d "helloworld"
 ```
 
+## Config
+```
+export DING_ROBOT_TOKEN=xxxxxxxxxxxxxxxxx
+export DING_ROBOT_SECRET=SECxxxxxxxxxxxxxxxxxx
+
+```
+
 ## Secret
 ```
 kubectl create secret generic alert-webhook-receiver-secret \
