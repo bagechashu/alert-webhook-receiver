@@ -31,6 +31,13 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	msgType := vars["msgType"]
 	msgMedium := vars["msgMedium"]
 
+	result, err := webhookController(msgType, msgMedium, body)
+
+	fmt.Fprint(w, result)
+	log.Printf("error: %s\n", err)
+}
+
+func webhookController(msgType string, msgMedium string, body []byte) (result string, err error) {
 	// 根据 msgType 初始化报警源结构体
 	var msg message.Message
 	switch msgType {
@@ -41,8 +48,8 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	case "huaweismn":
 		msg = message.HuaweiSMN{Body: body}
 	default:
-		fmt.Fprint(w, `{"message": "webhook message only support type [raw/prom/huaweismn]."}`)
-		log.Printf("error: msgtype doesn't support %s\n", msgType)
+		result = `{"message": "webhook message only support type [raw/prom/huaweismn]."}`
+		err = fmt.Errorf("msgtype type error: %s", msgType)
 		return
 	}
 
@@ -50,10 +57,10 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	var med medium.Medium
 	switch msgMedium {
 	case "ding":
-		markdown, err := msg.ConvertToDingMarkdown()
+		var markdown medium.DingTalkMarkdown
+		markdown, err = msg.ConvertToDingMarkdown()
 		if err != nil {
-			fmt.Fprint(w, `{"message": "convert to ding markdown error"}`)
-			log.Printf("error: convert data to ding markdown error, %s", err.Error())
+			result = `{"message": "convert to ding markdown error"}`
 			return
 		}
 		// set msgMedium to dingtalk
@@ -63,17 +70,18 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 			ReqBody: markdown,
 		}
 	default:
-		fmt.Fprint(w, `{"message": "webhook message medium only support [ding]."}`)
-		log.Printf("error: wrong message medium: %s \n", msgMedium)
+		result = `{"message": "webhook message medium only support [ding]."}`
+		err = fmt.Errorf("message medium error: %s", msgMedium)
 		return
 	}
 
-	err := med.Send()
+	err = med.Send()
 	if err != nil {
-		fmt.Fprint(w, `{"message": "send dingtalk error"}`)
-		log.Printf("error: send messages error, %s", err.Error())
+		result = `{"message": "send dingtalk error"}`
+		err = fmt.Errorf("send messages error, %s", err.Error())
 		return
 	}
 
-	fmt.Fprint(w, `{"message": "send successful"}`)
+	result = `{"message": "send successful"}`
+	return
 }
