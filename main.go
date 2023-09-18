@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
+	"github.com/bagechashu/alert-webhook-receiver/config"
 	"github.com/bagechashu/alert-webhook-receiver/router"
 )
 
@@ -21,7 +23,9 @@ func serveHTTP(server *http.Server) {
 
 func main() {
 	router := router.InitRouter()
-	server := &http.Server{Addr: ":9000", Handler: router}
+
+	addr := ":" + strconv.Itoa(config.Server.Port)
+	server := &http.Server{Addr: addr, Handler: router}
 
 	go serveHTTP(server)
 

@@ -11,8 +11,18 @@ type dingRobot struct {
 	Secret string
 }
 
+type server struct {
+	Port          int
+	SecretRequest bool
+	SecretKey     string
+}
+
 var (
 	DingRobot dingRobot
+)
+
+var (
+	Server server
 )
 
 func init() {
@@ -25,4 +35,6 @@ func init() {
 
 	DingRobot.Token = os.Getenv("DING_ROBOT_TOKEN")
 	DingRobot.Secret = os.Getenv("DING_ROBOT_SECRET")
+
+	Server.SecretKey = os.Getenv("WEBHOOK_SECRET_KEY")
 }

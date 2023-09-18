@@ -4,6 +4,11 @@ Content-Type: text/plain
 
 "raw string send"
 
+###
+POST http://127.0.0.1:9000/webhook/raw/ding?secret=xxxxxxxxxxxxxxxxx HTTP/1.1
+Content-Type: text/plain
+
+"raw string send"
 
 // https://support.huaweicloud.com/intl/en-us/usermanual-smn/smn_ug_a9002.html
 ###

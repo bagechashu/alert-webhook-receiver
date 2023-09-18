@@ -5,6 +5,7 @@ Message Type supported: {msgType}
 - Raw string: raw
 - Prometheus Alert Notification: prom
 - Huawei SMN: huaweismn
+- AlibabaCloud CloudMonitor: raw 
 
 Target medium supported: {msgMedium}
 - DingTalk: ding
