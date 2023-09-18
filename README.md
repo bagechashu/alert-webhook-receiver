@@ -38,6 +38,9 @@ kubectl apply -f deploy.yaml
 
 ```
 docker build -t <NAME>/alert-webhook-receiver:<TAG> .
+
+docker run -d -p 8000:8000 --name webhook <NAME>/alert-webhook-receiver:<TAG> -port 8000 -secret
+
 docker image prune -f
 ```
 
