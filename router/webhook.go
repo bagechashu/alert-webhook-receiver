@@ -12,6 +12,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var (
+	secret    string = "secret"
+	msgType   string = "msgType"
+	msgMedium string = "msgMedium"
+)
+
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Fprint(w, `{"message": "bad request, only allow POST method"}`)
@@ -22,7 +28,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	// 判断是否需要安全访问
 	if config.Server.SecretRequest {
 		query := r.URL.Query()
-		secret := query.Get("secret")
+		secret := query.Get(secret)
 		if secret != config.Server.SecretKey {
 			fmt.Fprint(w, `{"message": "bad request, secret key is error"}`)
 			log.Printf("error: bad request: [ %+v ]\n", r)
@@ -39,8 +45,8 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	// log.Print(string(body))
 
 	vars := mux.Vars(r)
-	msgType := vars["msgType"]
-	msgMedium := vars["msgMedium"]
+	msgType := vars[msgType]
+	msgMedium := vars[msgMedium]
 
 	result, err := webhookController(msgType, msgMedium, body)
 	if err != nil {
