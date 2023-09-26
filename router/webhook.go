@@ -25,15 +25,10 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 判断是否需要安全访问
-	if config.Server.SecretRequest {
-		query := r.URL.Query()
-		secret := query.Get(secret)
-		if secret != config.Server.SecretKey {
-			fmt.Fprint(w, `{"message": "bad request, secret key is error"}`)
-			log.Printf("error: bad request: [ %+v ]\n", r)
-			return
-		}
+	if err := auth(r); err != nil {
+		fmt.Fprint(w, `{"message": "bad request, auth failed"}`)
+		log.Printf("error: bad request: [ %+v ]\n", r)
+		return
 	}
 
 	body, _ := io.ReadAll(r.Body)
@@ -54,6 +49,19 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprint(w, `{"message": "send successful"}`)
+}
+
+// 判断是否需要安全访问
+func auth(r *http.Request) (err error) {
+	if config.Server.SecretRequest {
+		query := r.URL.Query()
+		secret := query.Get(secret)
+		if secret != config.Server.SecretKey {
+			err = fmt.Errorf("bad request, secret key is error")
+			return
+		}
+	}
+	return
 }
 
 func webhookController(msgType string, msgMedium string, body []byte) (err error) {
