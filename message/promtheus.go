@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"time"
-
-	"github.com/bagechashu/alert-webhook-receiver/medium"
 )
 
 // from prometheus model
@@ -34,7 +32,7 @@ type Prom struct {
 	Body []byte
 }
 
-func (prom Prom) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err error) {
+func (prom Prom) ConvertToMarkdown() (title, markdown string, err error) {
 
 	var notification Notification
 	err = json.Unmarshal(prom.Body, &notification)
@@ -50,9 +48,8 @@ func (prom Prom) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err 
 		buffer.WriteString(fmt.Sprintf("### <font color=\"#EFDC66\"> %s </font>\n", "告警异常"))
 		buffer.WriteString(fmt.Sprintf("##### %s\n", "Prom Notification 没有 notification.Alerts 字段"))
 
-		markdown = medium.NewDingTalkMarkdown()
-		markdown.SetTitle(fmt.Sprintln("告警异常"))
-		markdown.SetText(buffer.String())
+		title = fmt.Sprintln("告警异常")
+		markdown = buffer.String()
 		return
 	}
 
@@ -80,8 +77,7 @@ func (prom Prom) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err 
 
 	buffer.WriteString(fmt.Sprintf("---\n##### [当前报警共有 %d 条 ]\n", alertsNum))
 
-	markdown = medium.NewDingTalkMarkdown()
-	markdown.SetTitle(fmt.Sprintf("您有%d条监控信息, 请及时查看", alertsNum))
-	markdown.SetText(buffer.String())
+	title = fmt.Sprintf("您有%d条监控信息, 请及时查看", alertsNum)
+	markdown = buffer.String()
 	return
 }

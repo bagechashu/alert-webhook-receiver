@@ -78,7 +78,7 @@ func NewDingRobot() DingRobot {
 	}
 }
 
-func (robot *DingRobot) sign(timestamp int64, secret string) string {
+func (robot DingRobot) sign(timestamp int64, secret string) string {
 	strToHash := fmt.Sprintf("%d\n%s", timestamp, secret)
 	hmac256 := hmac.New(sha256.New, []byte(secret))
 	hmac256.Write([]byte(strToHash))
@@ -86,7 +86,7 @@ func (robot *DingRobot) sign(timestamp int64, secret string) string {
 	return base64.StdEncoding.EncodeToString(hmacCode)
 }
 
-func (robot *DingRobot) robotURL() string {
+func (robot DingRobot) robotURL() string {
 	if robot.Token == "" || robot.Secret == "" {
 		log.Println("error: env DING_ROBOT_TOKEN or DING_ROBOT_SECRET not found")
 		return ""
@@ -99,7 +99,7 @@ func (robot *DingRobot) robotURL() string {
 	return fmt.Sprintf("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s", robot.Token, timestamp, sign)
 }
 
-func (robot *DingRobot) Send() (err error) {
+func (robot DingRobot) Send() (err error) {
 	var webhook = robot.robotURL()
 	if err != nil || webhook == "" {
 		return

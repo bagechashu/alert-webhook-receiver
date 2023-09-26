@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-
-	"github.com/bagechashu/alert-webhook-receiver/medium"
 )
 
 // https://support.huaweicloud.com/usermanual-smn/smn_ug_a9002.html
@@ -21,7 +19,7 @@ type HuaweiSMN struct {
 	Body []byte
 }
 
-func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, err error) {
+func (smn HuaweiSMN) ConvertToMarkdown() (title, markdown string, err error) {
 	var smnReqBody SmnReqBody
 	err = json.Unmarshal(smn.Body, &smnReqBody)
 	if err != nil {
@@ -53,8 +51,7 @@ func (smn HuaweiSMN) ConvertToDingMarkdown() (markdown medium.DingTalkMarkdown, 
 		}
 	}
 
-	markdown = medium.NewDingTalkMarkdown()
-	markdown.SetTitle(fmt.Sprintln("云资源报警, 请及时查看."))
-	markdown.SetText(buffer.String())
+	title = fmt.Sprintln("云资源报警, 请及时查看.")
+	markdown = buffer.String()
 	return
 }
