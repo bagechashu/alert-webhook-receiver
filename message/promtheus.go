@@ -57,7 +57,7 @@ func (prom Prom) ConvertToMarkdown() (title, markdown string, err error) {
 	for _, alert := range notification.Alerts {
 		if alert.Status == "resolved" {
 			annotations := alert.Annotations
-			buffer.WriteString(fmt.Sprintf("### <font color=\"#08d417\"> %s </font>\n", "恢复通知"))
+			buffer.WriteString(fmt.Sprintf("### <font color=\"#08d417\"> %s%s </font>\n", alert.Labels["alertname"], "恢复"))
 			buffer.WriteString(fmt.Sprintf("##### %s\n", annotations["summary"]))
 			buffer.WriteString(fmt.Sprintf("\n> Status: %s\n", alert.Status))
 			buffer.WriteString(fmt.Sprintf("\n> Severity: %s\n", alert.Labels["severity"]))
@@ -65,7 +65,7 @@ func (prom Prom) ConvertToMarkdown() (title, markdown string, err error) {
 			buffer.WriteString(fmt.Sprintf("\n> Detail: %s%s\n", annotations["message"], annotations["description"]))
 		} else {
 			annotations := alert.Annotations
-			buffer.WriteString(fmt.Sprintf("### <font color=\"#FF0000\"> %s </font>\n", "告警通知"))
+			buffer.WriteString(fmt.Sprintf("### <font color=\"#FF0000\"> %s%s </font>\n", alert.Labels["alertname"], "告警"))
 			buffer.WriteString(fmt.Sprintf("##### %s\n", annotations["summary"]))
 			buffer.WriteString(fmt.Sprintf("\n> Status: %s\n", alert.Status))
 			buffer.WriteString(fmt.Sprintf("\n> Severity: %s\n", alert.Labels["severity"]))
