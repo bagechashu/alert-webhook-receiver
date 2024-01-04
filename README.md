@@ -12,13 +12,14 @@ Target medium supported: {msgMedium}
 
 Example: 
 ```
-curl -XPOST host:9000/webhook/{msgType}/{msgMedium} -d "helloworld"
+curl -XPOST host:9000/webhook/{msgType}/{msgMedium}?secret=asdfasdfasdfasdfasdf -d "helloworld"
 ```
 
 ## Config
 ```
 export DING_ROBOT_TOKEN=xxxxxxxxxxxxxxxxx
 export DING_ROBOT_SECRET=SECxxxxxxxxxxxxxxxxxx
+export WEBHOOK_SECRET_KEY=asdasdfasdfasdfasdf
 
 ```
 

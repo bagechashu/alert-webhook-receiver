@@ -2,11 +2,12 @@ version: '3'
 
 services:
  alert-webhook-receiver:
-   image: xianleeti/alert-webhook-receiver:v0.0.2-sendraw
+   image: xianleeti/alert-webhook-receiver:v0.1.2
    container_name: alert-webhook-receiver
    ports:
      - "9000:9000"
    environment:
      DING_ROBOT_TOKEN: <your_ding_robot_token>
      DING_ROBOT_SECRET: <your_ding_robot_secret>
+     WEBHOOK_SECRET_KEY: asdfasdfasdfasdfasdfasdf
    restart: always

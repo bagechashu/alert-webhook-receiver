@@ -11,6 +11,7 @@ type Medium interface {
 	Send() (err error)
 }
 
+// TODO: 使用抽象工厂模式改造 https://juejin.cn/post/7095581880200167432
 // 根据 msgMedium 初始化媒体结构体
 func CreateInterfaceMedium(msgMedium string, msg message.Message) (med Medium, err error) {
 	switch msgMedium {

@@ -14,22 +14,18 @@ spec:
     spec:
       containers:
         - name: alert-webhook-receiver
-          image: xianleeti/alert-webhook-receiver:v0.0.2
+          image: xianleeti/alert-webhook-receiver:v0.1.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9000
               name: http
           env:
             - name: DING_ROBOT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: alert-webhook-receiver-secret
-                  key: token
+              value: xxxxxxxxxxxxxxxxxxxxxxxxxxx
             - name: DING_ROBOT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: alert-webhook-receiver-secret
-                  key: secret
+              value: SECxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            - name: WEBHOOK_SECRET_KEY
+              value: asdfasdfasdfasdfasdf
           resources:
             requests:
               cpu: 50m
