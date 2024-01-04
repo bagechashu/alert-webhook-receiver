@@ -19,6 +19,8 @@ spec:
           ports:
             - containerPort: 9000
               name: http
+          args:
+            - "-secret"
           env:
             - name: DING_ROBOT_TOKEN
               value: xxxxxxxxxxxxxxxxxxxxxxxxxxx

@@ -11,8 +11,13 @@ Target medium supported: {msgMedium}
 - DingTalk: ding
 
 Example: 
+
 ```
+go run main.go -secret
 curl -XPOST host:9000/webhook/{msgType}/{msgMedium}?secret=asdfasdfasdfasdfasdf -d "helloworld"
+
+go run main.go
+curl -XPOST host:9000/webhook/{msgType}/{msgMedium} -d "helloworld"
 ```
 
 ## Config

@@ -4,6 +4,8 @@ services:
  alert-webhook-receiver:
    image: xianleeti/alert-webhook-receiver:v0.1.2
    container_name: alert-webhook-receiver
+   command:
+      - "/app/alert-webhook-receiver -secret"
    ports:
      - "9000:9000"
    environment:
